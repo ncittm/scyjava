@@ -6,10 +6,7 @@ from __future__ import annotations
 
 import logging
 import os
-import subprocess
 from typing import TYPE_CHECKING, Union
-
-import jpype
 
 from jgo.exec import JavaLocator, JavaSource
 
@@ -21,41 +18,11 @@ if TYPE_CHECKING:
 _logger = logging.getLogger(__name__)
 
 
-def ensure_jvm_available() -> None:
+def resolve_java(vendor: str | None = None, version: str | None = None) -> None:
     """
-    Ensure that the JVM is available.
-    """
-    fetch = scyjava.config.get_fetch_java()
-    if fetch == "never":
-        # Not allowed to fetch Java.
-        return
-    if fetch == "always" or not is_jvm_available():
-        fetch_java()
-
-
-def is_jvm_available() -> bool:
-    """Return True if the JVM is available, suppressing stderr on macos."""
-    from unittest.mock import patch
-
-    subprocess_check_output = subprocess.check_output
-
-    def _silent_check_output(*args, **kwargs):
-        # also suppress stderr on calls to subprocess.check_output
-        kwargs.setdefault("stderr", subprocess.DEVNULL)
-        return subprocess_check_output(*args, **kwargs)
-
-    try:
-        with patch.object(subprocess, "check_output", new=_silent_check_output):
-            jpype.getDefaultJVMPath()
-    # on Darwin, may raise a CalledProcessError when invoking `/usr/libexec/java_home`
-    except (jpype.JVMNotFoundException, subprocess.CalledProcessError):
-        return False
-    return True
-
-
-def fetch_java(vendor: str | None = None, version: str | None = None) -> None:
-    """
-    Fetch Java and configure PATH/JAVA_HOME.
+    Resolve JDK installation location and configure PATH/JAVA_HOME.
+    Might download Java or use the system Java, depending on the
+    scyjava.config.fetch_java setting.
 
     Supports cjdk version syntax including "11", "17", "11+", "17+", etc.
     See https://pypi.org/project/cjdk for more information.
@@ -67,8 +34,22 @@ def fetch_java(vendor: str | None = None, version: str | None = None) -> None:
 
     _logger.info(f"Fetching {vendor}:{version}...")
 
+    fetch = scyjava.config.get_fetch_java()
+
+    # Map scyjava fetch mode to jgo JavaSource strategy.
+    # "always" -> DOWNLOAD: always use cjdk-managed Java, ignoring system Java.
+    # "never"  -> SYSTEM:   always use system Java, never downloading via cjdk.
+    # "auto"   -> AUTO:     prefer system Java, fall back to cjdk if absent/too old.
+    _FETCH_MODES = {
+        "always": JavaSource.DOWNLOAD,
+        "download": JavaSource.DOWNLOAD,
+        "never": JavaSource.SYSTEM,
+        "system": JavaSource.SYSTEM,
+    }
+    java_source = _FETCH_MODES.get(fetch, JavaSource.AUTO)
+
     locator = JavaLocator(
-        java_source=JavaSource.AUTO,
+        java_source=java_source,
         java_version=version,  # Pass string directly (e.g. "11", "17", "11+", "17+")
         java_vendor=vendor,
         verbose=True,

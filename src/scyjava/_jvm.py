@@ -19,7 +19,7 @@ import jgo
 
 import scyjava.config
 from scyjava.config import Mode, mode
-from scyjava._jdk_fetch import ensure_jvm_available
+from scyjava._jdk_fetch import resolve_java
 
 _logger = logging.getLogger(__name__)
 
@@ -175,7 +175,7 @@ def start_jvm(options: Sequence[str] | None = None) -> None:
     _logger.debug("Adding jars from endpoints {0}".format(endpoints))
 
     # download Java as appropriate
-    ensure_jvm_available()
+    resolve_java()
 
     # Fail fast if Java version is too old. JPype 1.6+ dropped Java 8 support.
     try:
