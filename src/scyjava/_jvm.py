@@ -146,7 +146,7 @@ def jvm_version() -> tuple[int, ...]:
         raise RuntimeError(f"Inscrutable java version: {v}")
 
 
-def start_jvm(options: Sequence[str] = None) -> None:
+def start_jvm(options: Sequence[str] | None = None) -> None:
     """
     Explicitly connect to the Java virtual machine (JVM). Only one JVM can
     be active; does nothing if the JVM has already been started. Calling
