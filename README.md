@@ -1,5 +1,7 @@
-[![build status](https://github.com/scijava/scyjava/actions/workflows/build.yml/badge.svg)](https://github.com/scijava/scyjava/actions/workflows/build.yml)
-[![codecov](https://codecov.io/gh/scijava/scyjava/branch/main/graph/badge.svg?token=NLK3ADZUCU)](https://codecov.io/gh/scijava/scyjava)
+[![License](https://img.shields.io/pypi/l/scyjava.svg)](https://github.com/scijava/scyjava/raw/main/UNLICENSE)
+[![PyPI](https://img.shields.io/pypi/v/scyjava.svg)](https://pypi.org/project/scyjava)
+[![Python Version](https://img.shields.io/pypi/pyversions/scyjava.svg)](https://python.org)
+[![Build Status](https://github.com/scijava/scyjava/actions/workflows/build.yml/badge.svg)](https://github.com/scijava/scyjava/actions/workflows/build.yml)
 
 Supercharged Java access from Python.
 
