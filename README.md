@@ -1,9 +1,11 @@
+# scyjava
+
 [![License](https://img.shields.io/pypi/l/scyjava.svg)](https://github.com/scijava/scyjava/raw/main/UNLICENSE)
 [![PyPI](https://img.shields.io/pypi/v/scyjava.svg)](https://pypi.org/project/scyjava)
 [![Python Version](https://img.shields.io/pypi/pyversions/scyjava.svg)](https://python.org)
 [![Build Status](https://github.com/scijava/scyjava/actions/workflows/build.yml/badge.svg)](https://github.com/scijava/scyjava/actions/workflows/build.yml)
 
-Supercharged Java access from Python.
+*Supercharged Java access from Python.*
 
 Built on [JPype](https://jpype.readthedocs.io/en/latest/)
 and [jgo](https://github.com/apposed/jgo).
