@@ -130,11 +130,15 @@ def jvm_version() -> tuple[int, ...]:
     except subprocess.CalledProcessError as e:
         raise RuntimeError("System call to java failed") from e
 
-    output = output.replace("\n", " ").replace("\r", "")
-    m = re.match('.* version "([^"]*)"', output)
+    return _jvm_version_str_to_tuple(output, java)
+
+
+def _jvm_version_str_to_tuple(java_version_output: str, java: str) -> tuple[int, ...]:
+    java_version_output = java_version_output.replace("\n", " ").replace("\r", "")
+    m = re.match('.* version "([^"]*)"', java_version_output)
     if not m:
         raise RuntimeError(
-            f"Inscrutable java command output:\n$ {java} -version\n{output}"
+            f"Inscrutable java command output:\n$ {java} -version\n{java_version_output}"
         )
 
     v = m.group(1)
