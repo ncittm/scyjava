@@ -135,7 +135,7 @@ def jvm_version() -> tuple[int, ...]:
 
 def _jvm_version_str_to_tuple(java_version_output: str, java: str) -> tuple[int, ...]:
     java_version_output = java_version_output.replace("\n", " ").replace("\r", "")
-    m = re.match('.* version "([^"]*)"', java_version_output)
+    m = re.match(r'.*version "(\d+(?:\.\d+)*)', java_version_output)
     if not m:
         raise RuntimeError(
             f"Inscrutable java command output:\n$ {java} -version\n{java_version_output}"
